@@ -8,28 +8,28 @@ public class enemy : MonoBehaviour
     GameObject player;
     NavMeshAgent nav;
      Animator ani;
-    public int maxHP, damage;
-    public float dist,Ehealth,rot;
+    public int maxHP, damage,atkType;
+    public float dist,Ehealth,rot,eLevel;
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.Find("Player");
         nav = GetComponent<NavMeshAgent>();
         ani = GetComponent<Animator>();
-        
+        atkType = Random.Range(0, 2);
         ani.SetBool("attack", false);
         maxHP = 100;
         Ehealth = maxHP;
-
+        ani.SetFloat("attackType",atkType );
     }
 
     // Update is called once per frame
     void Update()
     {
+        transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+       // rot = player.transform.rotation.y - transform.rotation.y;
 
-        rot = player.transform.rotation.y - transform.rotation.y;
-
-       
+        transform.LookAt(player.transform);
        
 
         if(Vector3.Distance(player.transform.position,transform.position) < dist)
