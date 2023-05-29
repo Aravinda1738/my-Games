@@ -8,13 +8,14 @@ public class Movement : MonoBehaviour
 {
     public CharacterController cc;
     public float speed,tempAng,angSmooth;
-    public GameObject body,cam,mark;
+    public GameObject cam,mark;
     public CinemachineVirtualCamera aimView;
+    public CinemachineFreeLook freeLookCamera;
     Vector3 movDir;
    public Transform t,aimT;
     public AimCam ac;
     public Rig rig;
-    public bool aimEnd;
+    public bool aimEnd,isAim;
     public Animator ani;
     float aniMovSpeed=0;
  [SerializeField] [Range(0f, 30f)] float lerpTime;
@@ -59,26 +60,29 @@ public class Movement : MonoBehaviour
              aimT.position = hit.point;
          }
  */
-        if (move.magnitude >= 0.1f) //movement
+        if (move.magnitude >= 0.1f&&!isAim) //movement
         {
           
 
             float ang = Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
-            float finalAng = Mathf.SmoothDampAngle(transform.eulerAngles.y, ang, ref tempAng, angSmooth);
-            transform.rotation = Quaternion.Euler(0f, finalAng, 0f);
-            movDir = Quaternion.Euler(0f, finalAng, 0f) * Vector3.forward;
-            cc.Move(movDir.normalized * speed * Time.deltaTime);
             ani.SetBool("run", true);
+            
             if (Input.GetKey(KeyCode.LeftShift))
             {
+                
                 aniMovSpeed = Mathf.Lerp(aniMovSpeed,2f,lerpTime*Time.deltaTime);
+                speed = 10;
             }
             else
             {
               aniMovSpeed = Mathf.Lerp(aniMovSpeed, 1f, lerpTime * Time.deltaTime);
-                    
+                speed = 5;    
             }
             ani.SetFloat("mov",aniMovSpeed);
+            float finalAng = Mathf.SmoothDampAngle(transform.eulerAngles.y, ang, ref tempAng, angSmooth);
+            transform.rotation = Quaternion.Euler(0f, finalAng, 0f);
+          Vector3 movDir = Quaternion.Euler(0f, finalAng, 0f) * Vector3.forward;
+            cc.Move(movDir.normalized * speed * Time.deltaTime);
         }
         else
         {
@@ -94,11 +98,12 @@ public class Movement : MonoBehaviour
         if (Input.GetKey(KeyCode.Mouse1))//aim
         {
             aimView.Priority = 14;
-
+            isAim = true;
             ac.aim();
             rig.weight = 1f;
             ani.SetBool("aim", true);
             mark.SetActive(true);
+            
         }
         else
         {
@@ -112,7 +117,9 @@ public class Movement : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Mouse1))
         {
             aimEnd = false;
+            isAim = false;
             ani.SetBool("aim", false);
+            
         }
 
         if (Input.GetMouseButtonDown(0))
@@ -124,6 +131,20 @@ public class Movement : MonoBehaviour
         {
             ani.ResetTrigger("fire");
         }
+       
+
+            if (!isAim)
+            {
+               float ang = Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg + cam.transform.eulerAngles.y;
+               Quaternion.Slerp(transform.rotation, Quaternion.Euler(0f, ang, 0f), lerpTime * Time.deltaTime);
+                //transform.rotation = Quaternion.Euler(0f, ang, 0f);
+            }
+
+
+        // ...
+
+        // Synchronize aim virtual camera's rotation with the FreeLook camera's rotation
+        aimView.transform.rotation = freeLookCamera.transform.rotation;
 
     }
 }
