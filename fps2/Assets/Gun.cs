@@ -18,10 +18,10 @@ public class Gun : MonoBehaviour
 
       
 
-        if (Input.GetMouseButtonUp(1))
+       /* if (Input.GetMouseButtonUp(1))
         {
             aimPoint.SetActive(false);
-        }
+        }*/
 
 
             if (Physics.Raycast(ray, out RaycastHit hit, range, mask))

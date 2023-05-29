@@ -7,18 +7,19 @@ using Cinemachine;
 public class Movement : MonoBehaviour
 {
     public CharacterController cc;
-    public float speed,tempAng,angSmooth;
+    public float speed,tempAng,angSmooth,gravity,groundDist;
     public GameObject cam,mark;
     public CinemachineVirtualCamera aimView;
     public CinemachineFreeLook freeLookCamera;
-    Vector3 movDir;
-   public Transform t,aimT;
+    Vector3 movDir,velosity;
+   public Transform t,aimT,groundCheck;
     public AimCam ac;
     public Rig rig;
-    public bool aimEnd,isAim;
+    public bool aimEnd,isAim,onGround;
     public Animator ani;
     float aniMovSpeed=0;
  [SerializeField] [Range(0f, 30f)] float lerpTime;
+    public LayerMask groundMask;
     //  public CinemachineBrain cineBrain;
 
     /* public float damage = 10f;
@@ -40,6 +41,16 @@ public class Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
+        onGround = Physics.CheckSphere(groundCheck.position,groundDist,groundMask);
+
+        if (onGround&&velosity.y<0)
+        {
+            velosity.y = -2;
+        }
+        velosity.y += gravity * Time.deltaTime;
+
         
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
@@ -89,7 +100,7 @@ public class Movement : MonoBehaviour
             ani.SetBool("run", false);
                 
         }
-
+        cc.Move(velosity * Time.deltaTime);
         if (Input.GetKeyDown(KeyCode.Escape)) //escape
         {
            Cursor.lockState = CursorLockMode.None;
@@ -102,7 +113,7 @@ public class Movement : MonoBehaviour
             ac.aim();
             rig.weight = 1f;
             ani.SetBool("aim", true);
-            mark.SetActive(true);
+           // mark.SetActive(true);
             
         }
         else
@@ -110,7 +121,7 @@ public class Movement : MonoBehaviour
            
             aimView.Priority = 10;
             rig.weight = 0f;
-            mark.SetActive(false);
+          //  mark.SetActive(false);
             
         }
 
@@ -144,7 +155,8 @@ public class Movement : MonoBehaviour
         // ...
 
         // Synchronize aim virtual camera's rotation with the FreeLook camera's rotation
-        aimView.transform.rotation = freeLookCamera.transform.rotation;
+       // aimView.transform.rotation = freeLookCamera.transform.rotation;
 
     }
+   
 }
