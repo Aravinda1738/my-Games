@@ -20,6 +20,8 @@ public class Movement : MonoBehaviour
     float aniMovSpeed=0;
  [SerializeField] [Range(0f, 30f)] float lerpTime;
     public LayerMask groundMask;
+    public Gun gun;
+    public GameObject blood;
     //  public CinemachineBrain cineBrain;
 
     /* public float damage = 10f;
@@ -136,11 +138,20 @@ public class Movement : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             ani.SetTrigger("fire");
+
+
+
+              if (gun.enemyLocated)
+              {
+                gun.hit.collider.GetComponent<enemy>().takeHit(20);
+
+              }
         }
 
         if (Input.GetMouseButtonUp(0))
         {
             ani.ResetTrigger("fire");
+            
         }
        
 
@@ -158,5 +169,7 @@ public class Movement : MonoBehaviour
        // aimView.transform.rotation = freeLookCamera.transform.rotation;
 
     }
+
+  
    
 }

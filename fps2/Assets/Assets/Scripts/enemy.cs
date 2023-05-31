@@ -9,18 +9,21 @@ public class enemy : MonoBehaviour
     NavMeshAgent nav;
      Animator ani;
     public int maxHP, damage,atkType;
-    public float dist,Ehealth,rot,eLevel;
+    public float dist,Ehealth,rot,eLevel,random;
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.Find("Player");
         nav = GetComponent<NavMeshAgent>();
         ani = GetComponent<Animator>();
-        atkType = Random.Range(0, 2);
+        random = Random.Range(0, 2);
         ani.SetBool("attack", false);
         maxHP = 100;
         Ehealth = maxHP;
-        ani.SetFloat("attackType",atkType );
+        ani.SetFloat("attackType",random );
+        random = Random.Range(0, 2);
+        ani.SetFloat("deathType", random);
+        ani.SetFloat("runType", random);
     }
 
     // Update is called once per frame
@@ -29,7 +32,7 @@ public class enemy : MonoBehaviour
         transform.position = new Vector3(transform.position.x, 0, transform.position.z);
        // rot = player.transform.rotation.y - transform.rotation.y;
 
-        transform.LookAt(player.transform);
+        
        
 
         if(Vector3.Distance(player.transform.position,transform.position) < dist)
@@ -46,12 +49,15 @@ public class enemy : MonoBehaviour
 
         if (Ehealth < 1)
         {
-            ani.SetBool("dead", true);
+            
+            Destroy(gameObject, 5f);
         }
         else
         {
+            transform.LookAt(player.transform);
             nav.SetDestination(player.transform.position);
-            ani.SetBool("dead", false );
+           // ani.SetBool("dead", false );
+            
         }
 
 
@@ -64,7 +70,7 @@ public class enemy : MonoBehaviour
         if (Ehealth <= 0)
         {
             ani.SetBool("dead", true);
-
+            nav.enabled = false;
         }
     }
 }

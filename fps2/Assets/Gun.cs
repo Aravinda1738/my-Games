@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Gun : MonoBehaviour
@@ -9,8 +7,8 @@ public class Gun : MonoBehaviour
     public Camera cam;
     public LayerMask mask = new LayerMask();
     public GameObject aimPoint;
-    public bool debug;
-
+    public bool debug, enemyLocated;
+    public RaycastHit hit;
     // Update is called once per frame
     void Update()
     {
@@ -25,15 +23,25 @@ public class Gun : MonoBehaviour
          }*/
 
 
-        if (Physics.Raycast(ray, out RaycastHit hit, range, mask))
+        if (Physics.Raycast(ray, out hit, range, mask))
         {
             if (debug)
             {
-                Debug.Log(hit.transform.position + " " + hit.collider.name);
+                Debug.Log(hit.transform.position + " " + hit.collider.name + enemyLocated);
 
             }
 
             aimPoint.transform.position = hit.point;
+            if (hit.collider.tag.Equals("enemy"))
+            {
+                enemyLocated = true;
+                
+            }
+            else
+            {
+                enemyLocated = false;
+            }
+
         }
 
 
