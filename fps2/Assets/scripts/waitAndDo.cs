@@ -4,36 +4,17 @@ using UnityEngine;
 
 public class waitAndDo : MonoBehaviour
 {
-    private float timee;
-
-    private bool start,end;
-
-    public waitAndDo(float t)
+    public GameObject ui;
+    public float waitFor;
+    public void Start()
     {
-        this.Timee = t;
-        
+        StartCoroutine(change());
     }
 
-    public float Timee { get => timee; set => timee = value; }
-    public bool Start { get => start; set => start = value; }
-    public bool End
+    public IEnumerator change()
     {
-        get => end;
-    }
-    private void FixedUpdate()
-    {
-       
-
-        if (Start)
-        {
-            
-            Timee -= Time.deltaTime;
-
-            if (Timee <= 0)
-            {
-                end = true;
-            }
-        }
-        
+        yield return new WaitForSeconds(waitFor);
+        ui.SetActive(true);
+        Time.timeScale = 0;
     }
 }

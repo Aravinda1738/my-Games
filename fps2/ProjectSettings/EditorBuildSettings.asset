@@ -4,5 +4,11 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/FPS2/Other/2AS.unity
+    guid: 5957d029420597a488b445719e4a18d1
+  - enabled: 1
+    path: Assets/FPS2/Other/game 1.unity
+    guid: c03e14aeaa1da4441be192416cf9ff4a
   m_configObjects: {}
