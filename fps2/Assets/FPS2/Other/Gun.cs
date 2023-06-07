@@ -9,6 +9,7 @@ public class Gun : MonoBehaviour
     public GameObject aimPoint;
     public bool debug, enemyLocated;
     public RaycastHit hit;
+    
     // Update is called once per frame
     void Update()
     {

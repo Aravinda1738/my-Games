@@ -22,6 +22,7 @@ public class Movement : MonoBehaviour
     public LayerMask groundMask;
     public Gun gun;
     public GameObject blood;
+    public AudioSource runS, walkS;
     //  public CinemachineBrain cineBrain;
 
     /* public float damage = 10f;
@@ -85,11 +86,15 @@ public class Movement : MonoBehaviour
                 
                 aniMovSpeed = Mathf.Lerp(aniMovSpeed,2f,lerpTime*Time.deltaTime);
                 speed = 10;
+                runS.enabled = true;
+                walkS.enabled = false;
             }
             else
             {
               aniMovSpeed = Mathf.Lerp(aniMovSpeed, 1f, lerpTime * Time.deltaTime);
-                speed = 5;    
+                speed = 5;  
+                walkS.enabled = true;
+                runS.enabled = false;
             }
             ani.SetFloat("mov",aniMovSpeed);
             float finalAng = Mathf.SmoothDampAngle(transform.eulerAngles.y, ang, ref tempAng, angSmooth);
@@ -100,27 +105,34 @@ public class Movement : MonoBehaviour
         else
         {
             ani.SetBool("run", false);
-                
+            runS.enabled = false;
+            walkS.enabled = false;
         }
         cc.Move(velosity * Time.deltaTime);
         if (Input.GetKeyDown(KeyCode.Escape)) //escape
         {
            Cursor.lockState = CursorLockMode.None;
         }
-        
-        if (Input.GetKey(KeyCode.Mouse1))//aim
+
+
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+            transform.LookAt(GetComponent<AniEvent>().aimPoint.transform.position);
+
+
+            if (Input.GetKey(KeyCode.Mouse1))//aim
         {
             aimView.Priority = 14;
             isAim = true;
             ac.aim();
             rig.weight = 1f;
             ani.SetBool("aim", true);
+            freeLookCamera.m_Lens.FieldOfView = 45f;
            // mark.SetActive(true);
-            
+
         }
         else
         {
-           
+            freeLookCamera.m_Lens.FieldOfView = 72f;
             aimView.Priority = 10;
             rig.weight = 0f;
           //  mark.SetActive(false);
